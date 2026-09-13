@@ -46,10 +46,9 @@ async def login(request: Request):
     )
 
 
-@router.post("/auth/telegram/callback")
+@router.get("/auth/telegram/callback")
 async def auth_callback(request: Request):
-    form = await request.form()
-    data = {key: value for key, value in form.items()}
+    data = {key: value for key, value in request.query_params.items()}
     if not verify_telegram_login(data):
         return HTMLResponse("Bad signature", status_code=403)
     tg_id = int(data.get("id", 0))
