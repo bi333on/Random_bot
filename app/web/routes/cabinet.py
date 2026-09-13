@@ -42,7 +42,7 @@ async def login(request: Request):
     return templates.TemplateResponse(
         request,
         "login.html",
-        {"bot_username": settings.bot_username or "YOUR_BOT"},
+        {"bot_username": settings.bot_login_username},
     )
 
 

@@ -3,9 +3,14 @@
 {% block content %}
 <h1>Вход в кабинет</h1>
 <p>Войдите через Telegram:</p>
+{% if bot_username %}
 <script async src="https://telegram.org/js/telegram-widget.js?22"
         data-telegram-login="{{ bot_username }}"
         data-size="large"
         data-auth-url="/auth/telegram/callback"
         data-request-access="write"></script>
+{% else %}
+<p class="error">BOT_USERNAME не задан в .env — вход через Telegram недоступен.
+Добавьте BOT_USERNAME (username бота без «@») и перезапустите приложение.</p>
+{% endif %}
 {% endblock %}

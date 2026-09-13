@@ -87,6 +87,11 @@ class Settings(BaseSettings):
     def webhook_url(self) -> str:
         return f"{self.webhook_host}{self.webhook_path}"
 
+    @property
+    def bot_login_username(self) -> str:
+        """Username бота без '@' для Telegram Login Widget."""
+        return (self.bot_username or "").strip().lstrip("@")
+
 
 @lru_cache
 def get_settings() -> Settings:
