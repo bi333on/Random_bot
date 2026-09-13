@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Randomizer{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav>
+    <a href="/cabinet">Кабинет</a>
+    {% if is_admin %}<a href="/admin">Админка</a>{% endif %}
+    <a href="/logout">Выйти</a>
+</nav>
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

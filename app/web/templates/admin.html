@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Админка — Randomizer{% endblock %}
+{% block content %}
+<h1>Админ-панель</h1>
+<p>Пользователей: {{ users }} · Выручка: {{ "%.2f"|format(revenue / 100) }} ₽</p>
+
+<h2>Новый тариф</h2>
+<form method="post" action="/admin/plan">
+    <label>Название <input name="name" required></label>
+    <label>Описание <input name="description"></label>
+    <label>Цена, ₽ <input name="price" value="0"></label>
+    <label>Дней <input name="duration_days" type="number" value="30"></label>
+    <label>Активных конкурсов <input name="max_active_contests" type="number" value="1"></label>
+    <label>Участников на конкурс <input name="max_participants" placeholder="пусто = без лимита"></label>
+    <label>Победителей <input name="max_winners" type="number" value="1"></label>
+    <label><input type="checkbox" name="weights"> Веса</label>
+    <label><input type="checkbox" name="anti_cheat"> Анти-чит</label>
+    <label><input type="checkbox" name="hide_bot_mention"> Скрыть бота</label>
+    <label><input type="checkbox" name="comment_condition"> Комментарий</label>
+    <label><input type="checkbox" name="repost_condition"> Репост</label>
+    <label><input type="checkbox" name="export_csv"> Экспорт CSV</label>
+    <button type="submit">Создать</button>
+</form>
+
+<h2>Тарифы</h2>
+<table>
+    <tr><th>ID</th><th>Название</th><th>Цена</th><th>Активен</th><th></th></tr>
+    {% for p in plans %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ "%.2f"|format(p.price / 100) }} ₽</td>
+        <td>{{ p.is_active }}</td>
+        <td><form method="post" action="/admin/plan/{{ p.id }}/toggle"><button type="submit">Переключить</button></form></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Новый промокод</h2>
+<form method="post" action="/admin/promo">
+    <label>Код <input name="code" required></label>
+    <label>Тип
+        <select name="discount_type">
+            <option value="percent">%</option>
+            <option value="fixed">₽ (копейки)</option>
+        </select>
+    </label>
+    <label>Значение <input name="discount_value" type="number" value="10"></label>
+    <label>Лимит использований <input name="max_uses" placeholder="пусто = без лимита"></label>
+    <button type="submit">Создать</button>
+</form>
+
+<h2>Новая реклама</h2>
+<form method="post" action="/admin/ad">
+    <label>Заголовок <input name="title" required></label>
+    <label>Текст <input name="text"></label>
+    <label>Ссылка <input name="url"></label>
+    <button type="submit">Создать</button>
+</form>
+
+<h2>Реклама</h2>
+<table>
+    <tr><th>ID</th><th>Заголовок</th><th>Показы</th><th>Клики</th><th></th></tr>
+    {% for a in ads %}
+    <tr>
+        <td>{{ a.id }}</td>
+        <td>{{ a.title }}</td>
+        <td>{{ a.impressions }}</td>
+        <td>{{ a.clicks }}</td>
+        <td><form method="post" action="/admin/ad/{{ a.id }}/toggle"><button type="submit">{{ 'Деактивировать' if a.is_active else 'Активировать' }}</button></form></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Пополнение баланса</h2>
+<form method="post" action="/admin/topup">
+    <label>Telegram ID <input name="telegram_id" type="number" required></label>
+    <label>Рубли <input name="rubles" type="number" required></label>
+    <button type="submit">Пополнить</button>
+</form>
+
+<h2>Последние платежи</h2>
+<table>
+    <tr><th>ID</th><th>User</th><th>Сумма</th><th>Статус</th><th>Назначение</th></tr>
+    {% for p in payments %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.user_id }}</td>
+        <td>{{ "%.2f"|format(p.amount / 100) }}</td>
+        <td>{{ p.status }}</td>
+        <td>{{ p.purpose }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

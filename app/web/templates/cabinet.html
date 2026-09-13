@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Кабинет — Randomizer{% endblock %}
+{% block content %}
+<h1>Кабинет организатора</h1>
+<p>ID: {{ user.telegram_id }} · Баланс: {{ "%.2f"|format(user.balance / 100) }} ₽</p>
+
+<h2>Создать конкурс</h2>
+<form method="post" action="/cabinet/contest">
+    <label>Название <input name="title" required></label>
+    <label>Описание <input name="description"></label>
+    <label>Каналы (через запятую) <input name="channels" placeholder="@channel1, @channel2"></label>
+    <label>Условие
+        <select name="condition">
+            <option value="subscribe">Подписка</option>
+            <option value="comment">Комментарий</option>
+            <option value="repost">Репост</option>
+            <option value="none">Без условий</option>
+        </select>
+    </label>
+    <label>Победителей <input name="winners" type="number" value="1" min="1"></label>
+    <label>Итоги через/когда <input name="ends_in" value="1d" placeholder="1h, 2d, 2026-09-15 18:00"></label>
+    <label>Приз <input name="prize"></label>
+    <label>Куда опубликовать <input name="announce" placeholder="@channel или chat_id (пусто — себе в ЛС)"></label>
+    <button type="submit">Создать</button>
+</form>
+
+<h2>Мои конкурсы</h2>
+{% if contests %}
+<table>
+    <tr><th>#</th><th>Название</th><th>Статус</th><th>Участников</th></tr>
+    {% for c in contests %}
+    <tr>
+        <td>{{ c.id }}</td>
+        <td><a href="/cabinet/contest/{{ c.id }}">{{ c.title }}</a></td>
+        <td>{{ c.status }}</td>
+        <td>{{ counts.get(c.id, 0) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Конкурсов пока нет.</p>
+{% endif %}
+{% endblock %}
